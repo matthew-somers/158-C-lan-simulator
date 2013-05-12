@@ -7,7 +7,7 @@
 
 #define PORT 9930
 #define BUFLEN 1024
-#define TIMEOUT 800000 //in usec, aka 8000ms
+#define TIMEOUT 1 //in usec, aka 800ms
 
 /**
 * TODO: test it!
@@ -51,6 +51,7 @@ int main(void)
    //main loop, packets collide if within 800ms of each other
    while (1) 
    {
+      bzero(buf, BUFLEN);
       recvfrom(s, buf, BUFLEN, 0, &si_other, &slen);
 
       if (strcmp("", buf) != 0) //we received something

@@ -10,7 +10,7 @@
 #include <time.h>
 
 #define TIMESLOTS 5000
-#define TIMEOUT 4; //seconds to wait for ack before moving on
+#define TIMEOUT 4 //seconds to wait for ack before moving on
 #define PORT 9930
 #define BUFLEN 1024
 
@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
       exit(0);
    }
 
-   int lambda = argv[2];
-
+   int lambda = atoi(argv[2]);
+   printf("%d", lambda);
    struct sockaddr_in si_other, si_me;
    int s, i, slen=sizeof(si_other);
    char buf[BUFLEN];
@@ -69,7 +69,6 @@ int main(int argc, char *argv[])
    int lostpackets = 0;
    int waitslots = 0; //send packet to start
    int something = 0; //something for algorithm probably
-   int waittime = 0;
 
    //start clock
    double starttime = get_time_ms();
@@ -77,7 +76,7 @@ int main(int argc, char *argv[])
    //main loop, sends a packet, waits for an ack
    for (i = 0; i < TIMESLOTS; i++)
    {
-      if (waittime == 0)
+      if (waitslots == 0)
       {
          printf("Sending packet %d\n", (success+1));
          
@@ -93,7 +92,7 @@ int main(int argc, char *argv[])
          else if (strcmp("COLLISION", buf2) == 0) //it collided with something!
          {
             waitslots = expBackOff(lambda);
-            printf("%d. Packet collided, backing off for %d slots.\n", i);
+            printf("%d. Packet collided, backing off for %d slots.\n", waitslots);
          }
 
          else //packet lost, shouldn't happen much with small size
@@ -107,6 +106,7 @@ int main(int argc, char *argv[])
       else
       {
          printf("%d. Waiting %d more slot(s).\n", i, waitslots);
+         sleep(1);
          waitslots--;
       }
          
@@ -139,9 +139,9 @@ int expBackOff(int lambda)
    return (-1*lambda*logu);
 }
 
-int randomNumber(int max)  
+double randomNumber(int max)  
 {
-	double f = ( (double)rand() / (double)max  );
+	double f = ( (double)rand() / (double)RAND_MAX  );
 	return (0.000001 + f);
 }
 
