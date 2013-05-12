@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
    //main loop, sends a packet, waits for an ack
    for (i = 0; i < TIMESLOTS; i++)
    {
-      if (waitslots == 0)
+      if ((waitslots == 0) && (i % lambda == 0))
       {
          printf("Sending packet %d\n", (success+1));
          
@@ -124,14 +124,16 @@ int main(int argc, char *argv[])
       {
          if (i % lambda != 0)
             printf("Waiting for next lambda slot.\n");
+
          else
          {
             printf("%d. Waiting %d more slot(s).\n", i, waitslots);
             waitslots--;
          }
-         sleep(1);
+
       }
-         
+
+      usleep(800); //sleep at end of this slot 
    }
     
    //end clock
