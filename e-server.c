@@ -7,7 +7,7 @@
 
 #define PORT 9930
 #define BUFLEN 1024
-#define TIMEOUT 1 //in seconds
+#define TIMEOUT 800 //in microseconds
 
 /**
 * TODO: test it!
@@ -43,7 +43,8 @@ int main(void)
 
    //timeout socket so it can send
    struct timeval tv;
-   tv.tv_sec = TIMEOUT; 
+   tv.tv_sec = 0;
+   tv.tv_usec = TIMEOUT;
    setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(struct timeval));
 
    int received = 0;
