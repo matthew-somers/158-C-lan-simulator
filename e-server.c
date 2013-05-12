@@ -80,10 +80,10 @@ int main(void)
       {
          if (received == 1) //one packet received earlier, no collision
          {
-            printf("Successfully received packet from %s:%d\n", 
+            printf("\nSuccessfully received packet from %s:%d\n", 
                inet_ntoa(si_other2.sin_addr), ntohs(si_other2.sin_port));
 
-            printf("Sending \"SUCCESS\" to %s\n\n", inet_ntoa(si_other2.sin_addr));
+            printf("Sending \"SUCCESS\" to %s\n", inet_ntoa(si_other2.sin_addr));
             
             sprintf(buf, "SUCCESS");
             sendto(s, buf, BUFLEN, 0, &si_other, slen);
