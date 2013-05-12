@@ -7,7 +7,7 @@
 
 #define PORT 9930
 #define BUFLEN 1024
-#define TIMEOUT 1 //in usec, aka 800ms
+#define TIMEOUT 1 //in seconds
 
 /**
 * TODO: test it!
@@ -64,7 +64,7 @@ int main(void)
 
          else //both received, COLLISION!
          {
-            printf("Collision occured between packets.\n");
+            printf("\nCollision occured between packets.\n");
 
             sprintf(buf, "COLLISION");
             printf("Sending \"COLLISION\" to %s\n", inet_ntoa(si_other.sin_addr));

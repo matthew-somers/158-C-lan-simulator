@@ -9,20 +9,20 @@
 #include <sys/time.h>
 #include <time.h>
 
-#define TIMESLOTS 5000
+#define TIMESLOTS 100
 #define TIMEOUT 4 //seconds to wait for ack before moving on
 #define PORT 9930
 #define BUFLEN 1024
 
 /**
-* TODO: expBackOff() algorithm
+* REQUIRES -lm TO COMPILE!!!
 *
 *
 **/
 
 double get_time_ms();
 int expBackOff(int lambda);
-int randomNumber(int max);
+double randomNumber(int max);
 
 int main(int argc, char *argv[])
 {
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
          else if (strcmp("COLLISION", buf2) == 0) //it collided with something!
          {
             waitslots = expBackOff(lambda);
-            printf("%d. Packet collided, backing off for %d slots.\n", waitslots);
+            printf("%d. Packet collided, backing off for %d slots.\n", i, waitslots);
          }
 
          else //packet lost, shouldn't happen much with small size
