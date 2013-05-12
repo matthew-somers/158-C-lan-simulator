@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
    int lostpackets = 0;
    int waitslots = 0; //send packet to start
    int something = 0; //something for algorithm probably
+   int waittime = 0;
 
    //start clock
    double starttime = get_time_ms();
@@ -77,8 +78,7 @@ int main(int argc, char *argv[])
    {
       if (waittime == 0)
       {
-         printf("Sending packet %d\n", i);
-         sprintf(buf, "This is packet %d\n", i);
+         printf("Sending packet %d\n", (success+1));
          
          sendto(s, buf, BUFLEN, 0, &si_other, slen);
          recvfrom(s, buf2, BUFLEN, 0, &si_other, &slen);
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
             printf("%d. Packet lost.\n\n", i);
          }
 
-         bufzero(buf2, BUFLEN); //empty receive buffer at end
+         bzero(buf2, BUFLEN); //empty receive buffer at end
       }
       else
       {

@@ -42,11 +42,11 @@ int main(void)
    bind(s, &si_me, sizeof(si_me));
 
    //timeout socket so it can send
+   struct timeval tv;
    tv.tv_sec = TIMEOUT; 
    setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(struct timeval));
 
    int received = 0;
-   string secondaddr;
 
    //main loop, packets collide if within 800ms of each other
    while (1) 
