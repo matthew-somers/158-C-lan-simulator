@@ -15,14 +15,28 @@
 #define BUFLEN 1024
 
 /**
-* REQUIRES -lm TO COMPILE!!!
+* 
 *
 *
 **/
 
 double get_time_ms();
-int expBackOff(int lambda);
-double randomNumber(int max);
+
+int randomNumber(int max)  
+{
+  //printf("max: %d\n", max);
+  return 1 + (rand() % max);
+}
+
+int exponent(int base, int power)
+{
+  int result = base;
+  if(power == 0)
+    return 1;
+  if(power == 1)
+    return base;
+  return base * exponent(base, power-1);
+}
 
 int main(int argc, char *argv[])
 {
@@ -69,6 +83,7 @@ int main(int argc, char *argv[])
    int lostpackets = 0;
    int waitslots = 0; //send packet to start
    int something = 0; //something for algorithm probably
+   int collisions = 0;
    srand(time(NULL));
 
    //start clock
@@ -92,7 +107,8 @@ int main(int argc, char *argv[])
 
          else if (strcmp("COLLISION", buf2) == 0) //it collided with something!
          {
-            waitslots = expBackOff(lambda);
+            collisions++;
+            waitslots = randomNumber(exponent(2, collisions));//max of 2^c
             printf("%d. Packet collided, backing off for %d slots.\n", i, waitslots);
          }
 
@@ -106,9 +122,14 @@ int main(int argc, char *argv[])
       }
       else
       {
-         printf("%d. Waiting %d more slot(s).\n", i, waitslots);
+         if (i % lambda != 0)
+            printf("Waiting for next lambda slot.\n");
+         else
+         {
+            printf("%d. Waiting %d more slot(s).\n", i, waitslots);
+            waitslots--;
+         }
          sleep(1);
-         waitslots--;
       }
          
    }
@@ -121,7 +142,7 @@ int main(int argc, char *argv[])
    printf("Packets sent: %d\n", success);
    printf("Packets lost: %d\n", lostpackets);
    printf("Average RTT (including backoff): %f milliseconds\n", resulttime);
-   printf("Throughput: %d\n", throughput);
+   printf("Throughput: %d bps\n", throughput);
 
    close(s);
 }
@@ -131,19 +152,6 @@ double get_time_ms()
    struct timeval t;
    gettimeofday(&t, NULL);
    return (t.tv_sec + (t.tv_usec / 1000000.0)) * 1000.0;
-}
-
-int expBackOff(int lambda)
-{
-   double u = randomNumber(1);
-   double logu = log10(u);
-   return (-1*lambda*logu);
-}
-
-double randomNumber(int max)  
-{
-	double f = ( (double)rand() / (double)RAND_MAX  );
-	return (0.000001 + f);
 }
 
 
