@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
    int lostpackets = 0;
    int waitslots = 0; //send packet to start
    int something = 0; //something for algorithm probably
+   srand(time(NULL));
 
    //start clock
    double starttime = get_time_ms();
@@ -115,7 +116,7 @@ int main(int argc, char *argv[])
    //end clock
    double endtime = get_time_ms();
    double resulttime = (endtime - starttime) / success;
-   int throughput = (success / TIMESLOTS);
+   int throughput = ((success*BUFLEN*8) / TIMESLOTS);
 
    printf("Packets sent: %d\n", success);
    printf("Packets lost: %d\n", lostpackets);
