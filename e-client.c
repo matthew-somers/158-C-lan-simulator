@@ -21,7 +21,8 @@
 **/
 
 double get_time_ms();
-int expBackOff(int lambda, int something);
+int expBackOff(int lambda);
+int randomNumber(int max);
 
 int main(int argc, char *argv[])
 {
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
 
          else if (strcmp("COLLISION", buf2) == 0) //it collided with something!
          {
-            waitslots = expBackOff(lambda, something);
+            waitslots = expBackOff(lambda);
             printf("%d. Packet collided, backing off for %d slots.\n", i);
          }
 
@@ -131,10 +132,18 @@ double get_time_ms()
    return (t.tv_sec + (t.tv_usec / 1000000.0)) * 1000.0;
 }
 
-int expBackOff(int lambda, int something)
+int expBackOff(int lambda)
 {
-   //algorithm goes here
-   return 0;
+   double u = randomNumber(1);
+   double logu = log10(u);
+   return (-1*lambda*logu);
 }
+
+int randomNumber(int max)  
+{
+	double f = ( (double)rand() / (double)max  );
+	return (0.000001 + f);
+}
+
 
 
