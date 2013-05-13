@@ -9,7 +9,7 @@
 #include <sys/time.h>
 #include <time.h>
 
-#define TIMESLOTS 100
+#define TIMESLOTS 5000
 #define TIMEOUT 4 //seconds to wait for ack before moving on
 #define PORT 9930
 #define BUFLEN 1024
@@ -21,22 +21,8 @@
 **/
 
 double get_time_ms();
-
-int randomNumber(int max)  
-{
-  //printf("max: %d\n", max);
-  return 1 + (rand() % max);
-}
-
-int exponent(int base, int power)
-{
-  int result = base;
-  if(power == 0)
-    return 1;
-  if(power == 1)
-    return base;
-  return base * exponent(base, power-1);
-}
+int randomNumber(int max);
+int exponent(int base, int power);
 
 int main(int argc, char *argv[])
 {
@@ -48,11 +34,10 @@ int main(int argc, char *argv[])
    }
 
    int lambda = atoi(argv[2]);
-   printf("%d", lambda);
    struct sockaddr_in si_other, si_me;
    int s, i, slen=sizeof(si_other);
    char buf[BUFLEN];
-   char buf2[BUFLEN]; //second buffer to receive acks
+   char buf2[BUFLEN]; //second buffer to receive
      
    //socket()
    s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -139,12 +124,14 @@ int main(int argc, char *argv[])
    //end clock
    double endtime = get_time_ms();
    double resulttime = (endtime - starttime) / success;
-   int throughput = ((success*BUFLEN*8) / TIMESLOTS);
+   double throughput = (success / TIMESLOTS);
+   double throughput2 = ( (success*BUFLEN*8) / ((endtime-starttime)*1000) ); //bps version
 
    printf("Packets sent: %d\n", success);
    printf("Packets lost: %d\n", lostpackets);
    printf("Average RTT (including backoff): %f milliseconds\n", resulttime);
-   printf("Throughput: %d bps\n", throughput);
+   printf("Throughput: %f packets/timeslots\n", throughput);
+   printf("Throughput: %f bps\n", throughput2);
 
    close(s);
 }
@@ -156,5 +143,18 @@ double get_time_ms()
    return (t.tv_sec + (t.tv_usec / 1000000.0)) * 1000.0;
 }
 
+int randomNumber(int max)  
+{
+   return 1 + (rand() % max);
+}
 
+int exponent(int base, int power)
+{
+   int result = base;
+   if(power == 0)
+      return 1;
+   if(power == 1)
+      return base;
+   return base * exponent(base, power-1);
+}
 
