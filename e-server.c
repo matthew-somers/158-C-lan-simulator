@@ -65,7 +65,7 @@ int main(void)
 
          else //both received, COLLISION!
          {
-            printf("\nCollision occured between packets.\n");
+            printf("\nCollision occurred between packets.\n");
 
             sprintf(buf, "COLLISION");
             printf("Sending \"COLLISION\" to %s\n", inet_ntoa(si_other.sin_addr));
