@@ -124,8 +124,8 @@ int main(int argc, char *argv[])
    //end clock
    double endtime = get_time_ms();
    double resulttime = (endtime - starttime) / success;
-   double throughput = (success / TIMESLOTS);
-   double throughput2 = ( (success*BUFLEN*8) / ((endtime-starttime)*1000) ); //bps version
+   double throughput = ((double)success / (double)TIMESLOTS);
+   double throughput2 = ( (success*BUFLEN*8) / ((endtime-starttime)/1000) ); //bps version
 
    printf("Packets sent: %d\n", success);
    printf("Packets lost: %d\n", lostpackets);
