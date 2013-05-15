@@ -23,6 +23,7 @@
 double get_time_ms();
 int randomNumber(int max);
 int exponent(int base, int power);
+int poisson(int lambda);
 
 int main(int argc, char *argv[])
 {
@@ -88,11 +89,13 @@ int main(int argc, char *argv[])
          {
             success++;
             printf("%d. Server received packet successfully.\n\n", i);
+            waitslots = poisson(lambda);
          }
 
          else if (strcmp("COLLISION", buf2) == 0) //it collided with something!
          {
             collisions++;
+            
             waitslots = randomNumber(exponent(2, collisions));//max of 2^c
             printf("%d. Packet collided, backing off for %d slots.\n", i, waitslots);
          }
@@ -141,6 +144,19 @@ double get_time_ms()
    struct timeval t;
    gettimeofday(&t, NULL);
    return (t.tv_sec + (t.tv_usec / 1000000.0)) * 1000.0;
+}
+
+int poisson(int lambda)
+{
+   double u = randombetween0and1();
+   double logu = log10(u);
+   return (int)(-1*lambda*logu);
+}
+
+double randombetween0and1()
+{
+	double f = ( (double)rand() / (double)RAND_MAX  );
+	return (0.000001 + f);
 }
 
 int randomNumber(int max)  
