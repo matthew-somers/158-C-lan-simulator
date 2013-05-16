@@ -22,6 +22,7 @@
 
 double get_time_ms();
 int randomNumber(int max);
+double randombetween0and1();
 int exponent(int base, int power);
 int poisson(int lambda);
 
