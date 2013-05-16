@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
    //main loop, sends a packet, waits for an ack
    for (i = 0; i < TIMESLOTS; i++)
    {
-      if ((waitslots == 0) && (i % lambda == 0))
+      if (waitslots == 0)
       {
          printf("Sending packet %d\n", (success+1));
          
@@ -109,17 +109,11 @@ int main(int argc, char *argv[])
 
          bzero(buf2, BUFLEN); //empty receive buffer at end
       }
+
       else
       {
-         if (i % lambda != 0)
-            printf("Waiting for next lambda slot.\n");
-
-         else
-         {
-            printf("%d. Waiting %d more slot(s).\n", i, waitslots);
-            waitslots--;
-         }
-
+         printf("%d. Waiting %d more slot(s).\n", i, waitslots);
+         waitslots--;
       }
 
       usleep(800); //sleep at end of this slot 
@@ -157,7 +151,9 @@ int poisson(int lambda)
 double randombetween0and1()
 {
 	double f = ( (double)rand() / (double)RAND_MAX  );
-	return (0.000001 + f);
+   if (f == 0)
+      f += 0.0001;
+	return f;
 }
 
 int randomNumber(int max)  
