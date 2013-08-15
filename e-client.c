@@ -22,9 +22,9 @@
 
 double get_time_ms();
 int randomNumber(int max);
-double randombetween0and1();
+double randomFrac();
 int exponent(int base, int power);
-int poisson(int lambda);
+int poisson(int l);
 
 int main(int argc, char *argv[])
 {
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
    //main loop, sends a packet, waits for an ack
    for (i = 0; i < TIMESLOTS; i++)
    {
-      if (waitslots == 0)
+      if ((waitslots == 0))
       {
          printf("Sending packet %d\n", (success+1));
          
@@ -96,7 +96,6 @@ int main(int argc, char *argv[])
          else if (strcmp("COLLISION", buf2) == 0) //it collided with something!
          {
             collisions++;
-            
             waitslots = randomNumber(exponent(2, collisions));//max of 2^c
             printf("%d. Packet collided, backing off for %d slots.\n", i, waitslots);
          }
@@ -123,7 +122,7 @@ int main(int argc, char *argv[])
    double endtime = get_time_ms();
    double resulttime = (endtime - starttime) / success;
    double throughput = ((double)success / (double)TIMESLOTS);
-   double throughput2 = ( (success*BUFLEN*8) / ((endtime-starttime)/1000) ); //bps version
+   double throughput2 = ( (double)(success*BUFLEN*8.0) / ((endtime-starttime)/1000.0) ); //bps version
 
    printf("Packets sent: %d\n", success);
    printf("Packets lost: %d\n", lostpackets);
@@ -141,19 +140,19 @@ double get_time_ms()
    return (t.tv_sec + (t.tv_usec / 1000000.0)) * 1000.0;
 }
 
-int poisson(int lambda)
+int poisson(int l)
 {
-   double u = randombetween0and1();
+   double u = randomFrac();
+printf("u %f ", u);
    double logu = log10(u);
-   return (int)(-1*lambda*logu);
+printf("logu %f\n", logu);
+   return (int)(-1*l*logu);
 }
 
-double randombetween0and1()
+double randomFrac()
 {
-	double f = ( (double)rand() / (double)RAND_MAX  );
-   if (f == 0)
-      f += 0.0001;
-	return f;
+   double f = 0.000001 + ((double)rand() / (double)RAND_MAX);
+   return f;
 }
 
 int randomNumber(int max)  
@@ -170,4 +169,3 @@ int exponent(int base, int power)
       return base;
    return base * exponent(base, power-1);
 }
-
